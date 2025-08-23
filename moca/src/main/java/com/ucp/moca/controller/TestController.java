@@ -41,4 +41,11 @@ public class TestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> changeStatus(@PathVariable Long id) {
+        testService.changeStatus(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

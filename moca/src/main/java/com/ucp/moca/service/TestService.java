@@ -10,5 +10,6 @@ public interface TestService {
     void save(Test test);
     void update(Long id, Test testUpdated);
     void delete(Long id);
+    void changeStatus(Long id);
 
 }

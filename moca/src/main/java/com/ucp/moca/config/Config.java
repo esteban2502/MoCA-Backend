@@ -17,14 +17,14 @@ public class Config implements WebMvcConfigurer {
         if(allowedOrigins.equals("*")){
             registry.addMapping("/**")
                     .allowedOriginPatterns("*")
-                    .allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedMethods("GET", "POST", "PUT","PATCH","DELETE")
                     .allowedHeaders("*")
                     .exposedHeaders("Content-Disposition")
                     .allowCredentials(true);
         }else{
             registry.addMapping("/**")
                     .allowedOrigins(allowedOrigins.split(","))
-                    .allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedMethods("GET", "POST", "PUT","PATCH","DELETE")
                     .allowedHeaders("*")
                     .exposedHeaders("Content-Disposition")
                     .allowCredentials(true);
