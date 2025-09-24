@@ -30,6 +30,7 @@ public class Test {
     @JsonIgnore
     private List<Question> questions;
 
+
     @Transient
     private Long numQuestions; // No se guarda en la BD
 
