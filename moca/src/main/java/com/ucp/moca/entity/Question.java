@@ -30,7 +30,7 @@ public class Question {
     private String description;
 
     // Orden en el que aparece dentro de la prueba
-    private Integer order;
+    private Integer questionOrder;
 
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
