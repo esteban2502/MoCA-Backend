@@ -23,7 +23,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<Test> getAll() {
-        List<Test> tests = testRepository.findAll();
+        List<Test> tests = testRepository.findAllOrderByIdDesc();
         for (Test test : tests) {
             Long count = questionRepository.countByTestId(test.getId());
             test.setNumQuestions(count);
