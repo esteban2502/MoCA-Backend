@@ -44,7 +44,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new EntityNotFoundException("Answer con id " + id + " no encontrado"));
 
         existingAnswer.setQuestion(answerUpdated.getQuestion());
-        existingAnswer.setSelectedOption(answerUpdated.getSelectedOption());
         existingAnswer.setTextResponse(answerUpdated.getTextResponse());
         existingAnswer.setScore(answerUpdated.getScore());
 

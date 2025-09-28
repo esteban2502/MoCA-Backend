@@ -25,11 +25,7 @@ public class Answer {
     @JsonIgnoreProperties({"options", "test", "category"})
     private Question question;
 
-    // Si es opción múltiple, relación a la opción elegida
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id")
-    @JsonIgnoreProperties({"question"})
-    private Option selectedOption;
+
 
     // Si es respuesta abierta (texto)
     private String textResponse;

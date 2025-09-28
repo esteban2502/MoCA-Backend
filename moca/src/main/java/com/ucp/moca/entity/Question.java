@@ -46,9 +46,4 @@ public class Question {
     @JsonIgnoreProperties({"questions"})
     private Test test;
 
-    // Relación con opciones (solo aplica si tipo = OPCION_MULTIPLE)
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"question"})
-    private List<Option> options;
-
 }

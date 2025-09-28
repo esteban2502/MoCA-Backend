@@ -1,6 +1,8 @@
 package com.ucp.moca.service.implement;
 
+import com.ucp.moca.dto.TestUpdateRequest;
 import com.ucp.moca.entity.Test;
+import com.ucp.moca.exception.TestWithQuestionsException;
 import com.ucp.moca.repository.QuestionRepository;
 import com.ucp.moca.repository.TestRepository;
 import com.ucp.moca.service.TestService;
@@ -37,19 +39,29 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void update(Long id, Test testUpdated) {
+    public void update(Long id, TestUpdateRequest testUpdated) {
         Test existingTest = testRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Test con id " + id + " no encontrado"));
 
         existingTest.setTitle(testUpdated.getTitle());
         existingTest.setDescription(testUpdated.getDescription());
+        existingTest.setStatus(testUpdated.isStatus());
 
         testRepository.save(existingTest);
     }
 
     @Override
     public void delete(Long id) {
-         testRepository.deleteById(id);
+        // Verificar si el test tiene preguntas asociadas
+        Long questionCount = questionRepository.countByTestId(id);
+        if (questionCount > 0) {
+            throw new TestWithQuestionsException(
+                "No se puede eliminar el examen porque tiene " + questionCount + " pregunta(s) asociada(s). " +
+                "Primero debe eliminar todas las preguntas del examen."
+            );
+        }
+        
+        testRepository.deleteById(id);
     }
 
     @Override

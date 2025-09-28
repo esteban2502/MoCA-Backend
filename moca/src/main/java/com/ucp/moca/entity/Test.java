@@ -26,7 +26,7 @@ public class Test {
     private boolean status;
 
     @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"test", "category", "options"})
+    @JsonIgnoreProperties({"test", "category"})
     private List<Question> questions;
 
     @Transient

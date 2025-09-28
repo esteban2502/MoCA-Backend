@@ -1,5 +1,6 @@
 package com.ucp.moca.controller;
 
+import com.ucp.moca.dto.TestUpdateRequest;
 import com.ucp.moca.entity.Test;
 import com.ucp.moca.service.TestService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class TestController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Test testUpdate){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody TestUpdateRequest testUpdate){
         testService.update(id, testUpdate);
         return ResponseEntity.ok().build();
     }
