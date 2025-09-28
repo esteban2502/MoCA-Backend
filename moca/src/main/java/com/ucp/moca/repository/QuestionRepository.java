@@ -12,6 +12,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT q FROM Question q WHERE q.test.id = :id")
     List<Question> getAllByTestId(@Param("id") Long id);
 
+    @Query("SELECT q FROM Question q WHERE q.test.id = :testId AND q.questionOrder = :questionOrder")
+    List<Question> findByTestIdAndQuestionOrder(@Param("testId") Long testId, @Param("questionOrder") Integer questionOrder);
+
     Long countByTestId(Long testId);
 
 }

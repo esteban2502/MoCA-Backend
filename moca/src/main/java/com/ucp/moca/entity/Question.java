@@ -1,7 +1,6 @@
 package com.ucp.moca.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,11 +10,14 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "questions", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"test_id", "question_order"})
+})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Question {
 
     @Id
@@ -30,23 +32,23 @@ public class Question {
     private String description;
 
     // Orden en el que aparece dentro de la prueba
+    @Column(name = "question_order")
     private Integer questionOrder;
 
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Category category;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id")
-    @JsonBackReference
+    @JsonIgnoreProperties({"questions"})
     private Test test;
 
     // Relación con opciones (solo aplica si tipo = OPCION_MULTIPLE)
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnoreProperties({"question"})
     private List<Option> options;
 
 }

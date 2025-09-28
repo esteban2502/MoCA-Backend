@@ -1,6 +1,6 @@
 package com.ucp.moca.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Option {
 
     @Id
@@ -26,6 +27,6 @@ public class Option {
     // Relación con la pregunta
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({"options", "test", "category"})
     private Question question;
 }
