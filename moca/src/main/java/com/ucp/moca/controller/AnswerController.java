@@ -2,6 +2,7 @@ package com.ucp.moca.controller;
 
 import com.ucp.moca.entity.Answer;
 import com.ucp.moca.service.AnswerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,42 +13,102 @@ import java.util.List;
 @RequestMapping("/answer/v1")
 public class AnswerController {
 
-    private final AnswerService answerService;
+    @Autowired
+    private AnswerService answerService;
 
-    public AnswerController(AnswerService answerService) {
-        this.answerService = answerService;
-    }
-
-    @GetMapping("/question/{questionId}")
-    public ResponseEntity<List<Answer>> getAllByQuestionId(@PathVariable Long questionId) {
-        return ResponseEntity.ok(answerService.getAllByQuestionId(questionId));
-    }
-
-    @GetMapping("/test/{testId}")
-    public ResponseEntity<List<Answer>> getAllByTestId(@PathVariable Long testId) {
-        return ResponseEntity.ok(answerService.getAllByTestId(testId));
+    @GetMapping
+    public ResponseEntity<List<Answer>> getAllAnswers() {
+        try {
+            List<Answer> answers = answerService.getAll();
+            return ResponseEntity.ok(answers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Answer> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(answerService.getById(id));
+    public ResponseEntity<Answer> getAnswerById(@PathVariable Long id) {
+        try {
+            Answer answer = answerService.getById(id);
+            return ResponseEntity.ok(answer);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<List<Answer>> getAnswersByQuestionId(@PathVariable Long questionId) {
+        try {
+            List<Answer> answers = answerService.getAllByQuestionId(questionId);
+            return ResponseEntity.ok(answers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/test/{testId}")
+    public ResponseEntity<List<Answer>> getAnswersByTestId(@PathVariable Long testId) {
+        try {
+            List<Answer> answers = answerService.getAllByTestId(testId);
+            return ResponseEntity.ok(answers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/result/{resultId}")
+    public ResponseEntity<List<Answer>> getAnswersByResultId(@PathVariable Long resultId) {
+        try {
+            List<Answer> answers = answerService.getAllByResultId(resultId);
+            return ResponseEntity.ok(answers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody Answer answer) {
-        answerService.save(answer);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> createAnswer(@RequestBody Answer answer) {
+        try {
+            answerService.save(answer);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<Void> createAnswers(@RequestBody List<Answer> answers) {
+        try {
+            answerService.saveAll(answers);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Answer answer) {
-        answerService.update(id, answer);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> updateAnswer(@PathVariable Long id, @RequestBody Answer answer) {
+        try {
+            answerService.update(id, answer);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        answerService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteAnswer(@PathVariable Long id) {
+        try {
+            answerService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

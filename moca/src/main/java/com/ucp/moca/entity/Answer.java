@@ -25,12 +25,21 @@ public class Answer {
     @JsonIgnoreProperties({"options", "test", "category"})
     private Question question;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "result_id", nullable = false)
+    @JsonIgnoreProperties({"answers"})
+    private Result result;
 
+    // Respuesta del paciente
+    private String userAnswer;
 
     // Si es respuesta abierta (texto)
     private String textResponse;
 
     // Puntaje asignado por el psicólogo
     private Integer score;
+
+    // Observaciones del evaluador
+    private String notes;
 
 }

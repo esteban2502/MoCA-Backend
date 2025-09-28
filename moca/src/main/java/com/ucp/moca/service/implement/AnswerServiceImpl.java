@@ -18,6 +18,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public List<Answer> getAll() {
+        return answerRepository.findAll();
+    }
+
+    @Override
     public List<Answer> getAllByQuestionId(Long questionId) {
         return answerRepository.findByQuestionId(questionId);
     }
@@ -25,6 +30,11 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<Answer> getAllByTestId(Long testId) {
         return answerRepository.findByQuestionTestId(testId);
+    }
+
+    @Override
+    public List<Answer> getAllByResultId(Long resultId) {
+        return answerRepository.findByResultId(resultId);
     }
 
     @Override
@@ -39,13 +49,20 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public void saveAll(List<Answer> answers) {
+        answerRepository.saveAll(answers);
+    }
+
+    @Override
     public void update(Long id, Answer answerUpdated) {
         Answer existingAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Answer con id " + id + " no encontrado"));
 
         existingAnswer.setQuestion(answerUpdated.getQuestion());
+        existingAnswer.setUserAnswer(answerUpdated.getUserAnswer());
         existingAnswer.setTextResponse(answerUpdated.getTextResponse());
         existingAnswer.setScore(answerUpdated.getScore());
+        existingAnswer.setNotes(answerUpdated.getNotes());
 
         answerRepository.save(existingAnswer);
     }
