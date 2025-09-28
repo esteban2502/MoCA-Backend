@@ -35,6 +35,10 @@ public class Question {
     @Column(name = "question_order")
     private Integer questionOrder;
 
+    // Puntaje máximo de la pregunta
+    @Column(name = "max_score")
+    private Integer maxScore;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

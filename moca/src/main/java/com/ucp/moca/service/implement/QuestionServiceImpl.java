@@ -42,6 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setQuestion(questionUpdated.getQuestion());
         existingQuestion.setDescription(questionUpdated.getDescription());
         existingQuestion.setQuestionOrder(questionUpdated.getQuestionOrder());
+        existingQuestion.setMaxScore(questionUpdated.getMaxScore());
 
         questionRepository.save(existingQuestion);
     }
