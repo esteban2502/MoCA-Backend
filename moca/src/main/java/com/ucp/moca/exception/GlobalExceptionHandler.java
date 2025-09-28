@@ -12,9 +12,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDuplicateQuestionOrder(DuplicateQuestionOrderException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
-
-    @ExceptionHandler(TestWithQuestionsException.class)
-    public ResponseEntity<String> handleTestWithQuestions(TestWithQuestionsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
 }
