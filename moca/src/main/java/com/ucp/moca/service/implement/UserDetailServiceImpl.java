@@ -111,6 +111,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         String name = authCreateUserRequest.name();
         String email = authCreateUserRequest.email();
         String password = authCreateUserRequest.password();
+        String idNumber = authCreateUserRequest.idNumber();
         List<String> roleRequest = authCreateUserRequest.roleRequest().roleListName();
 
         Set<RoleEntity> roleEntitySet = roleRepository.findRoleEntitiesByRoleEnumIn(roleRequest)
@@ -121,7 +122,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         UserEntity userEntity = UserEntity.builder()
+                .fullName(name)
                 .email(email)
+                .idNumber(idNumber)
                 .password(passwordEncoder.encode(password))
                 .roles(roleEntitySet)
                 .isEnabled(true)

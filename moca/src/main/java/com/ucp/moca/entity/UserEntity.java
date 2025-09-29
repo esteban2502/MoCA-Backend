@@ -22,17 +22,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50)
-    private String firstName;
-
-    @Column(length = 50)
-    private String secondName;
-
-    @Column(length = 50)
-    private String firstLastName;
-
-    @Column(length = 50)
-    private String secondLastName;
+    private String fullName;
 
     @Column( unique = true, length = 20)
     private String idNumber; // cedula
@@ -46,6 +36,8 @@ public class UserEntity {
 
     @Column(unique = true)
     private String email;
+
+    private String genero; // MASCULINO, FEMENINO, OTRO
 
 
 
@@ -71,21 +63,5 @@ public class UserEntity {
     private boolean accountNoLocked;
     @Column(name = "credential_No_Expired")
     private boolean credentialNoExpired;
-
-
-    // Método para obtener el nombre completo
-    public String getFullName() {
-        StringBuilder fullName = new StringBuilder();
-        fullName.append(firstName);
-        if (secondName != null && !secondName.trim().isEmpty()) {
-            fullName.append(" ").append(secondName);
-        }
-        fullName.append(" ").append(firstLastName);
-        if (secondLastName != null && !secondLastName.trim().isEmpty()) {
-            fullName.append(" ").append(secondLastName);
-        }
-        return fullName.toString();
-    }
-
 
 }

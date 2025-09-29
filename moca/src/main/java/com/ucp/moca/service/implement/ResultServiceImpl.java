@@ -6,9 +6,11 @@ import com.ucp.moca.entity.Result;
 import com.ucp.moca.entity.Answer;
 import com.ucp.moca.entity.Test;
 import com.ucp.moca.entity.Question;
+import com.ucp.moca.entity.UserEntity;
 import com.ucp.moca.repository.ResultRepository;
 import com.ucp.moca.repository.TestRepository;
 import com.ucp.moca.repository.QuestionRepository;
+import com.ucp.moca.repository.UserEntityRepository;
 import com.ucp.moca.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class ResultServiceImpl implements ResultService {
     
     @Autowired
     private QuestionRepository questionRepository;
+    
+    @Autowired
+    private UserEntityRepository userEntityRepository;
 
     @Override
     public Result createResult(Test test, List<Answer> answers) {
@@ -67,6 +72,20 @@ public class ResultServiceImpl implements ResultService {
             }
         } else {
             throw new RuntimeException("Test ID no puede ser null");
+        }
+        
+        // Buscar el Usuario por ID (opcional)
+        if (resultRequest.getUserId() != null) {
+            System.out.println("Buscando Usuario con ID: " + resultRequest.getUserId());
+            Optional<UserEntity> userOpt = userEntityRepository.findById(resultRequest.getUserId());
+            if (userOpt.isPresent()) {
+                result.setUser(userOpt.get());
+                System.out.println("Usuario encontrado: " + userOpt.get());
+            } else {
+                System.out.println("Usuario no encontrado con ID: " + resultRequest.getUserId() + ", continuando sin usuario");
+            }
+        } else {
+            System.out.println("UserId es null, continuando sin usuario");
         }
         
         // Procesar las respuestas

@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ResultRequest {
     private Long testId;
+    private Integer userId;
     private List<AnswerRequest> answers;
     private Integer totalScore;
     private String evaluationDate;

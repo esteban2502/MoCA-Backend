@@ -28,6 +28,11 @@ public class Result {
     @JsonIgnoreProperties({"questions"})
     private Test test;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnoreProperties({"roles", "password", "tests"})
+    private UserEntity user;
+
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"result"})
     private List<Answer> answers;
@@ -43,6 +48,15 @@ public class Result {
     // Constructor para crear un resultado
     public Result(Test test, List<Answer> answers) {
         this.test = test;
+        this.answers = answers;
+        this.evaluationDate = LocalDateTime.now();
+        this.calculateTotalScore();
+    }
+
+    // Constructor para crear un resultado con usuario
+    public Result(Test test, UserEntity user, List<Answer> answers) {
+        this.test = test;
+        this.user = user;
         this.answers = answers;
         this.evaluationDate = LocalDateTime.now();
         this.calculateTotalScore();

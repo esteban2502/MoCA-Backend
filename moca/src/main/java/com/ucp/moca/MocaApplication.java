@@ -20,10 +20,9 @@ public class MocaApplication {
 		SpringApplication.run(MocaApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	CommandLineRunner init(UserEntityRepository userEntityRepository){
 		return args->{
-			/*Creo los permisos*/
 
 			PermissionEntity createPermission = PermissionEntity.builder()
 					.name("CREATE")
@@ -41,14 +40,12 @@ public class MocaApplication {
 					.name("DELETE")
 					.build();
 
-			/*Creo los roles*/
 
 			RoleEntity roleUser = RoleEntity.builder()
 					.roleEnum(RoleEnum.USER)
 					.permissionList(Set.of(createPermission,readPermission,updatePermission,deletePermission))
 					.build();
 
-			/*CREATE USERS*/
 
 			UserEntity userEsteban = UserEntity.builder()
 					.email("juanes@gmail.com")
@@ -74,5 +71,5 @@ public class MocaApplication {
 
 		};
 
-	}
+	}*/
 }
