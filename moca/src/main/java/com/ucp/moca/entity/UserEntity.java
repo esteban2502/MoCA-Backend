@@ -2,10 +2,7 @@ package com.ucp.moca.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,38 +14,37 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String firstName;
 
     @Column(length = 50)
     private String secondName;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String firstLastName;
 
     @Column(length = 50)
     private String secondLastName;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column( unique = true, length = 20)
     private String idNumber; // cedula
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 50)
     private String academicLevel; // nivel academico
 
-    @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
 
