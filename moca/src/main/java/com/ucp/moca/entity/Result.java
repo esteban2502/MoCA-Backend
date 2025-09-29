@@ -28,8 +28,8 @@ public class Result {
     @JsonIgnoreProperties({"questions"})
     private Test test;
 
-    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"result", "question"})
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"result"})
     private List<Answer> answers;
 
     // Puntaje total del test
