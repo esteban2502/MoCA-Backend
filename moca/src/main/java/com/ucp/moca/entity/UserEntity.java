@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +39,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 20)
     private String idNumber; // cedula
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, length = 50)
@@ -46,12 +48,14 @@ public class User {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role; // ADMIN, PSYCHOLOGIST, PATIENT
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name="user_roles",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> roles = new HashSet<>(); //  PSYCHOLOGIST, PATIENT
 
     @Column(nullable = false)
     private boolean active = true;
@@ -59,11 +63,19 @@ public class User {
     @Column(length = 500)
     private String notes; // notas adicionales sobre el usuario
 
-    public enum UserRole {
-        ADMIN,
-        PSYCHOLOGIST,
-        PATIENT
-    }
+    /*
+    * Propiedades Spring Security
+    * */
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+    @Column(name = "account_No_Expired")
+    private boolean accountNoExpired;
+    @Column(name = "account_No_Locked")
+    private boolean accountNoLocked;
+    @Column(name = "credential_No_Expired")
+    private boolean credentialNoExpired;
+
 
     // Método para obtener el nombre completo
     public String getFullName() {
@@ -79,17 +91,5 @@ public class User {
         return fullName.toString();
     }
 
-    // Método para obtener las iniciales
-    public String getInitials() {
-        StringBuilder initials = new StringBuilder();
-        initials.append(firstName.charAt(0));
-        if (secondName != null && !secondName.trim().isEmpty()) {
-            initials.append(secondName.charAt(0));
-        }
-        initials.append(firstLastName.charAt(0));
-        if (secondLastName != null && !secondLastName.trim().isEmpty()) {
-            initials.append(secondLastName.charAt(0));
-        }
-        return initials.toString().toUpperCase();
-    }
+
 }
