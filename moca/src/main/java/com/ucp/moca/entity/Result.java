@@ -33,6 +33,11 @@ public class Result {
     @JsonIgnoreProperties({"roles", "password", "tests"})
     private UserEntity user;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id")
+    @JsonIgnoreProperties({})
+    private Patient patient;
+
     @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"result"})
     private List<Answer> answers;

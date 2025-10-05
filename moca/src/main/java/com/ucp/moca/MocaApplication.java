@@ -5,10 +5,14 @@ import com.ucp.moca.entity.RoleEntity;
 import com.ucp.moca.entity.RoleEnum;
 import com.ucp.moca.entity.UserEntity;
 import com.ucp.moca.repository.UserEntityRepository;
+import com.ucp.moca.repository.RoleRepository;
+import com.ucp.moca.repository.PermissionRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Set;
@@ -16,58 +20,74 @@ import java.util.Set;
 @SpringBootApplication
 public class MocaApplication {
 
+
+	@Value("${admin.email}")
+	private String emailAdmin;
+
+	@Value("${admin.password}")
+	private String passwordAdmin;
+
+	private PasswordEncoder passwordEncoder;
+
+	public MocaApplication(@Value("${admin.password}") String passwordAdmin,
+						   @Value("${admin.email}") String emailAdmin,
+						   PasswordEncoder passwordEncoder) {
+		this.passwordAdmin = passwordAdmin;
+		this.emailAdmin = emailAdmin;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(MocaApplication.class, args);
 	}
 
 	/*@Bean
-	CommandLineRunner init(UserEntityRepository userEntityRepository){
+	CommandLineRunner init(UserEntityRepository userEntityRepository, RoleRepository roleRepository, PermissionRepository permissionRepository){
 		return args->{
 
-			PermissionEntity createPermission = PermissionEntity.builder()
-					.name("CREATE")
-					.build();
+			// Ensure base permissions exist
+			PermissionEntity createPermission = permissionRepository.findByName("CREATE")
+					.orElseGet(() -> permissionRepository.save(PermissionEntity.builder().name("CREATE").build()));
+			PermissionEntity readPermission = permissionRepository.findByName("READ")
+					.orElseGet(() -> permissionRepository.save(PermissionEntity.builder().name("READ").build()));
+			PermissionEntity updatePermission = permissionRepository.findByName("UPDATE")
+					.orElseGet(() -> permissionRepository.save(PermissionEntity.builder().name("UPDATE").build()));
+			PermissionEntity deletePermission = permissionRepository.findByName("DELETE")
+					.orElseGet(() -> permissionRepository.save(PermissionEntity.builder().name("DELETE").build()));
 
-			PermissionEntity readPermission = PermissionEntity.builder()
-					.name("READ")
-					.build();
+			// Ensure roles exist with permissions
+			RoleEntity adminRole = roleRepository.findByRoleEnum(RoleEnum.ADMIN);
+			if (adminRole == null) {
+				adminRole = RoleEntity.builder()
+						.roleEnum(RoleEnum.ADMIN)
+						.permissionList(Set.of(createPermission, readPermission, updatePermission, deletePermission))
+						.build();
+				adminRole = roleRepository.save(adminRole);
+			}
 
-			PermissionEntity updatePermission = PermissionEntity.builder()
-					.name("UPDATE")
-					.build();
+	
+			RoleEntity user2Role = roleRepository.findByRoleEnum(RoleEnum.USER);
+			if (user2Role == null) {
+				user2Role = RoleEntity.builder()
+						.roleEnum(RoleEnum.USER)
+						.permissionList(Set.of(readPermission, updatePermission))
+						.build();
+				roleRepository.save(user2Role);
+			}
 
-			PermissionEntity deletePermission = PermissionEntity.builder()
-					.name("DELETE")
-					.build();
-
-
-			RoleEntity roleUser = RoleEntity.builder()
-					.roleEnum(RoleEnum.USER)
-					.permissionList(Set.of(createPermission,readPermission,updatePermission,deletePermission))
-					.build();
-
-
-			UserEntity userEsteban = UserEntity.builder()
-					.email("juanes@gmail.com")
-					.password("$2a$10$SF4XUCMWBG53RZ..HjyuRus8gkqWO36bk71n2wThEluHeb8BkyVJ.")
-					.isEnabled(true)
-					.accountNoExpired(true)
-					.accountNoLocked(true)
-					.credentialNoExpired(true)
-					.roles(Set.of(roleUser))
-					.build();
-
-			UserEntity userDavid = UserEntity.builder()
-					.email("david@gmail.com")
-					.password("$2a$10$SF4XUCMWBG53RZ..HjyuRus8gkqWO36bk71n2wThEluHeb8BkyVJ.")
-					.isEnabled(true)
-					.accountNoExpired(true)
-					.accountNoLocked(true)
-					.credentialNoExpired(true)
-					.roles(Set.of(roleUser))
-					.build();
-
-			userEntityRepository.saveAll(List.of(userEsteban,userDavid));
+			// Create admin user only if not present, and assign existing ADMIN role
+			if (userEntityRepository.findUserEntityByIdNumber(emailAdmin).isEmpty()) {
+				UserEntity admin = UserEntity.builder()
+						.email(emailAdmin)
+						.password(passwordEncoder.encode(passwordAdmin))
+						.isEnabled(true)
+						.accountNoExpired(true)
+						.accountNoLocked(true)
+						.credentialNoExpired(true)
+						.roles(Set.of(adminRole))
+						.build();
+				userEntityRepository.saveAll(List.of(admin));
+			}
 
 		};
 

@@ -49,6 +49,7 @@ public class SecurityConfig {
                     config.addAllowedMethod(HttpMethod.POST);
                     config.addAllowedMethod(HttpMethod.GET);
                     config.addAllowedMethod(HttpMethod.PUT);
+                    config.addAllowedMethod(HttpMethod.PATCH);
                     config.addAllowedMethod(HttpMethod.DELETE);
                     return config;
                 }))

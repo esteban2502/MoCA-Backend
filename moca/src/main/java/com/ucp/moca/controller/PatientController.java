@@ -1,11 +1,12 @@
 package com.ucp.moca.controller;
 
-import com.ucp.moca.entity.UserEntity;
-import com.ucp.moca.repository.UserEntityRepository;
+import com.ucp.moca.entity.Patient;
+import com.ucp.moca.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -13,28 +14,23 @@ import java.util.Optional;
 public class PatientController {
 
     @Autowired
-    private UserEntityRepository userEntityRepository;
+    private PatientRepository patientRepository;
+
+    @GetMapping
+    public ResponseEntity<List<Patient>> getAllPatients() {
+        List<Patient> patients = patientRepository.findAll();
+        return ResponseEntity.ok(patients);
+    }
 
     @GetMapping("/cedula/{idNumber}")
-    public ResponseEntity<UserEntity> getPatientByCedula(@PathVariable String idNumber) {
-        Optional<UserEntity> patient = userEntityRepository.findUserEntityByIdNumber(idNumber);
-        if (patient.isPresent()) {
-            return ResponseEntity.ok(patient.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Patient> getPatientByCedula(@PathVariable String idNumber) {
+        Optional<Patient> patient = patientRepository.findByDocumentNumber(idNumber);
+        return patient.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserEntity> registerPatient(@RequestBody UserEntity patient) {
-        // Asignar rol de paciente por defecto
-        patient.setActive(true);
-        patient.setEnabled(true);
-        patient.setAccountNoExpired(true);
-        patient.setAccountNoLocked(true);
-        patient.setCredentialNoExpired(true);
-        
-        UserEntity savedPatient = userEntityRepository.save(patient);
-        return ResponseEntity.ok(savedPatient);
+    public ResponseEntity<Patient> registerPatient(@RequestBody Patient patient) {
+        Patient saved = patientRepository.save(patient);
+        return ResponseEntity.ok(saved);
     }
 }

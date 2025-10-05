@@ -7,10 +7,12 @@ import com.ucp.moca.entity.Answer;
 import com.ucp.moca.entity.Test;
 import com.ucp.moca.entity.Question;
 import com.ucp.moca.entity.UserEntity;
+import com.ucp.moca.entity.Patient;
 import com.ucp.moca.repository.ResultRepository;
 import com.ucp.moca.repository.TestRepository;
 import com.ucp.moca.repository.QuestionRepository;
 import com.ucp.moca.repository.UserEntityRepository;
+import com.ucp.moca.repository.PatientRepository;
 import com.ucp.moca.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class ResultServiceImpl implements ResultService {
     
     @Autowired
     private UserEntityRepository userEntityRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     @Override
     public Result createResult(Test test, List<Answer> answers) {
@@ -74,18 +79,14 @@ public class ResultServiceImpl implements ResultService {
             throw new RuntimeException("Test ID no puede ser null");
         }
         
-        // Buscar el Usuario por ID (opcional)
-        if (resultRequest.getUserId() != null) {
-            System.out.println("Buscando Usuario con ID: " + resultRequest.getUserId());
-            Optional<UserEntity> userOpt = userEntityRepository.findById(resultRequest.getUserId());
-            if (userOpt.isPresent()) {
-                result.setUser(userOpt.get());
-                System.out.println("Usuario encontrado: " + userOpt.get());
+        // Asociar el paciente si llega patientId
+        if (resultRequest.getPatientId() != null) {
+            Optional<Patient> patientOpt = patientRepository.findById(resultRequest.getPatientId());
+            if (patientOpt.isPresent()) {
+                result.setPatient(patientOpt.get());
             } else {
-                System.out.println("Usuario no encontrado con ID: " + resultRequest.getUserId() + ", continuando sin usuario");
+                throw new RuntimeException("Paciente no encontrado con ID: " + resultRequest.getPatientId());
             }
-        } else {
-            System.out.println("UserId es null, continuando sin usuario");
         }
         
         // Procesar las respuestas

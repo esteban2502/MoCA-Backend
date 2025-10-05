@@ -13,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ResultRequest {
     private Long testId;
-    private Integer userId;
+    private Integer userId; // legacy, deprecado
+    private Long patientId;
     private List<AnswerRequest> answers;
     private Integer totalScore;
     private String evaluationDate;
