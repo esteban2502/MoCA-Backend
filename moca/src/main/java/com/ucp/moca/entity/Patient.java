@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "patients")
@@ -29,6 +31,15 @@ public class Patient {
     private String fullName;
 
     private LocalDate birthDate;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "patient_psychologists",
+        joinColumns = @JoinColumn(name = "patient_id"),
+        inverseJoinColumns = @JoinColumn(name = "psychologist_id")
+    )
+    @JsonIgnoreProperties({"roles", "password", "patients"})
+    private Set<UserEntity> psychologists = new HashSet<>(); // psicólogos que han evaluado al paciente
 }
 
 

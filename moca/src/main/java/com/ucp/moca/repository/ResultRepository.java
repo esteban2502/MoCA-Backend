@@ -14,4 +14,7 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
     
     // Buscar resultados por test ordenados por fecha
     List<Result> findByTestIdOrderByEvaluationDateDesc(Long testId);
+    
+    // Buscar resultados por usuario ordenados por fecha
+    List<Result> findByUserIdOrderByEvaluationDateDesc(Integer userId);
 }

@@ -15,6 +15,8 @@ import com.ucp.moca.repository.UserEntityRepository;
 import com.ucp.moca.repository.PatientRepository;
 import com.ucp.moca.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,11 +81,48 @@ public class ResultServiceImpl implements ResultService {
             throw new RuntimeException("Test ID no puede ser null");
         }
         
+        // Asignar el usuario autenticado como owner del resultado
+        UserEntity currentUser = null;
+        try {
+            currentUser = getCurrentUser();
+            result.setUser(currentUser);
+            System.out.println("Usuario asignado al resultado: " + currentUser.getFullName());
+        } catch (RuntimeException e) {
+            System.err.println("No se pudo asignar usuario al resultado: " + e.getMessage());
+        }
+        
         // Asociar el paciente si llega patientId
         if (resultRequest.getPatientId() != null) {
             Optional<Patient> patientOpt = patientRepository.findById(resultRequest.getPatientId());
             if (patientOpt.isPresent()) {
-                result.setPatient(patientOpt.get());
+                Patient patient = patientOpt.get();
+                result.setPatient(patient);
+                
+                // Agregar el psicólogo actual a la lista de psicólogos del paciente
+                if (currentUser != null) {
+                    final Integer currentUserId = currentUser.getId();
+                    final String currentUserName = currentUser.getFullName();
+                    
+                    // Verificar si el psicólogo ya está en la lista
+                    boolean wasAlreadyPsychologist = patient.getPsychologists().stream()
+                        .anyMatch(psychologist -> psychologist.getId().equals(currentUserId));
+                    
+                    if (!wasAlreadyPsychologist) {
+                        // Buscar el UserEntity desde la base de datos para evitar problemas de contexto
+                        Optional<UserEntity> userFromDb = userEntityRepository.findById(currentUserId);
+                        if (userFromDb.isPresent()) {
+                            patient.getPsychologists().add(userFromDb.get());
+                            Patient savedPatient = patientRepository.save(patient);
+                            System.out.println("✅ Psicólogo agregado al paciente: " + savedPatient.getFullName() + 
+                                             " - Psicólogo: " + currentUserName + 
+                                             " (Total psicólogos: " + savedPatient.getPsychologists().size() + ")");
+                        } else {
+                            System.err.println("❌ No se pudo encontrar el usuario en la base de datos: " + currentUserId);
+                        }
+                    } else {
+                        System.out.println("ℹ️ Psicólogo ya estaba asignado al paciente: " + patient.getFullName());
+                    }
+                }
             } else {
                 throw new RuntimeException("Paciente no encontrado con ID: " + resultRequest.getPatientId());
             }
@@ -150,6 +189,11 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    public List<Result> getByUserId(Integer userId) {
+        return resultRepository.findByUserIdOrderByEvaluationDateDesc(userId);
+    }
+
+    @Override
     public void update(Long id, Result result) {
         if (resultRepository.existsById(id)) {
             result.setId(id);
@@ -173,5 +217,13 @@ public class ResultServiceImpl implements ResultService {
     public void save(Result result) {
         result.calculateTotalScore();
         resultRepository.save(result);
+    }
+
+    private UserEntity getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserEntity) {
+            return (UserEntity) authentication.getPrincipal();
+        }
+        throw new RuntimeException("Usuario no autenticado");
     }
 }

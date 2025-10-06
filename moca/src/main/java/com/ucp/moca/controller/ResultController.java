@@ -2,10 +2,13 @@ package com.ucp.moca.controller;
 
 import com.ucp.moca.dto.ResultRequest;
 import com.ucp.moca.entity.Result;
+import com.ucp.moca.entity.UserEntity;
 import com.ucp.moca.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,22 @@ public class ResultController {
             List<Result> results = resultService.getAll();
             return ResponseEntity.ok(results);
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/my-results")
+    public ResponseEntity<List<Result>> getMyResults() {
+        try {
+            UserEntity currentUser = getCurrentUser();
+            List<Result> results = resultService.getByUserId(currentUser.getId());
+            return ResponseEntity.ok(results);
+        } catch (RuntimeException e) {
+            System.err.println("Error obteniendo usuario autenticado: " + e.getMessage());
+            return ResponseEntity.ok(List.of());
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -83,5 +102,13 @@ public class ResultController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private UserEntity getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserEntity) {
+            return (UserEntity) authentication.getPrincipal();
+        }
+        throw new RuntimeException("Usuario no autenticado");
     }
 }

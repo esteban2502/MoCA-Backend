@@ -24,6 +24,9 @@ public interface ResultService {
     // Obtener todos los resultados
     List<Result> getAll();
     
+    // Obtener resultados por usuario
+    List<Result> getByUserId(Integer userId);
+    
     // Actualizar resultado
     void update(Long id, Result result);
     

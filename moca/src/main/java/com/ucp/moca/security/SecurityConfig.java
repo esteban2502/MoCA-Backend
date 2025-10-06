@@ -2,6 +2,7 @@ package com.ucp.moca.security;
 
 
 import com.ucp.moca.Util.JwtUtils;
+import com.ucp.moca.repository.UserEntityRepository;
 import com.ucp.moca.security.filter.JwtTokenValidator;
 import com.ucp.moca.service.implement.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,19 +35,25 @@ public class SecurityConfig {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private UserEntityRepository userEntityRepository;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .httpBasic(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     // Crea una nueva instancia de CorsConfiguration para definir las reglas CORS.
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.addAllowedOriginPattern("*");
+                    config.addAllowedOrigin("http://localhost:4200"); // Frontend puerto 4200
+                    config.addAllowedOrigin("http://localhost:4201"); // Frontend puerto 4201
                     config.addAllowedHeader("*");
+
                     config.addAllowedMethod(HttpMethod.POST);
                     config.addAllowedMethod(HttpMethod.GET);
                     config.addAllowedMethod(HttpMethod.PUT);
@@ -54,12 +62,12 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(http -> {
-                  //  http.requestMatchers(HttpMethod.POST,"/auth/**").permitAll();
-                  //  http.anyRequest().authenticated();
-                    http.anyRequest().permitAll();
+                    http.requestMatchers(HttpMethod.POST,"/auth/**").permitAll();
+                    http.anyRequest().authenticated();
+                   // http.anyRequest().permitAll();
 
                 })
-              //  .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenValidator(jwtUtils, userEntityRepository), BasicAuthenticationFilter.class)
                 .build();
 
     }
