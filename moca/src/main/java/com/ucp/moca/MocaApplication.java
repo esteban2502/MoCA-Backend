@@ -41,7 +41,7 @@ public class MocaApplication {
 		SpringApplication.run(MocaApplication.class, args);
 	}
 
-	/*@Bean
+	@Bean
 	CommandLineRunner init(UserEntityRepository userEntityRepository, RoleRepository roleRepository, PermissionRepository permissionRepository){
 		return args->{
 
@@ -76,7 +76,7 @@ public class MocaApplication {
 			}
 
 			// Create admin user only if not present, and assign existing ADMIN role
-			if (userEntityRepository.findUserEntityByIdNumber(emailAdmin).isEmpty()) {
+			if (userEntityRepository.findUserEntityByEmail(emailAdmin).isEmpty()) {
 				UserEntity admin = UserEntity.builder()
 						.email(emailAdmin)
 						.password(passwordEncoder.encode(passwordAdmin))
@@ -91,5 +91,5 @@ public class MocaApplication {
 
 		};
 
-	}*/
+	}
 }
