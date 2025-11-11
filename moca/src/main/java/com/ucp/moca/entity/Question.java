@@ -25,10 +25,11 @@ public class Question {
     private Long id;
 
     // Texto principal de la pregunta
-    @Column(nullable = false, length = 500)
+    @Column(length = 500)
     private String question;
 
     // Instrucciones adicionales para el psicólogo
+    @Column(length = 500)
     private String description;
 
     // Orden en el que aparece dentro de la prueba

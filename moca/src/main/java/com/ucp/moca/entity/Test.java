@@ -22,6 +22,7 @@ public class Test {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(length = 500)
     private String description;
     private boolean status;
 

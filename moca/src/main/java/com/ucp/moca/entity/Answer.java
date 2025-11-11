@@ -40,6 +40,7 @@ public class Answer {
     private Integer score;
 
     // Observaciones del evaluador
+    @Column(nullable = false, length = 500)
     private String notes;
 
 }
