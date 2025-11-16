@@ -35,8 +35,6 @@ src/
 ```
 
 
-## 🏗️ Arquitectura de la plataforma
-![Diagrama de arquitectura](docs/Arquitectura%20de%20la%20plataforma.jpg)
 
 
 ## 👨‍💻 Autores
