@@ -12,6 +12,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT q FROM Question q WHERE q.test.id = :id ORDER BY q.questionOrder ASC")
     List<Question> getAllByTestId(@Param("id") Long id);
 
+    @Query("SELECT q FROM Question q WHERE q.test.id = :id AND (q.status = true OR q.status IS NULL) ORDER BY q.questionOrder ASC")
+    List<Question> getActiveByTestId(@Param("id") Long id);
+
     @Query("SELECT q FROM Question q WHERE q.test.id = :testId AND q.questionOrder = :questionOrder")
     List<Question> findByTestIdAndQuestionOrder(@Param("testId") Long testId, @Param("questionOrder") Integer questionOrder);
 

@@ -40,6 +40,14 @@ public class Question {
     @Column(name = "max_score")
     private Integer maxScore;
 
+    // Indica si la pregunta es de dibujar
+    @Column(name = "is_drawing")
+    private Boolean isDrawing;
+
+    // Estado de la pregunta (activa/inactiva)
+    @Column(name = "status")
+    private Boolean status;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

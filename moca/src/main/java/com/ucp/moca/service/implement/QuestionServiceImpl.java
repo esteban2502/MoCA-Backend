@@ -25,9 +25,18 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Question> getActiveByTestId(Long id) {
+        return questionRepository.getActiveByTestId(id);
+    }
+
+    @Override
     public void save(Question question) {
         // Validar que no exista otra pregunta con el mismo orden en el mismo examen
         validateQuestionOrder(question.getTest().getId(), question.getQuestionOrder(), null);
+        // Si no se especifica status, establecerlo como true por defecto
+        if (question.getStatus() == null) {
+            question.setStatus(true);
+        }
         questionRepository.save(question);
     }
 
@@ -43,6 +52,8 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setDescription(questionUpdated.getDescription());
         existingQuestion.setQuestionOrder(questionUpdated.getQuestionOrder());
         existingQuestion.setMaxScore(questionUpdated.getMaxScore());
+        existingQuestion.setIsDrawing(questionUpdated.getIsDrawing());
+        existingQuestion.setStatus(questionUpdated.getStatus());
 
         questionRepository.save(existingQuestion);
     }
@@ -50,6 +61,20 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void delete(Long id) {
         questionRepository.deleteById(id);
+    }
+
+    @Override
+    public void changeStatus(Long id) {
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Question no encontrada con id " + id));
+
+        // Si status es null, establecerlo como false, sino invertirlo
+        if (question.getStatus() == null) {
+            question.setStatus(false);
+        } else {
+            question.setStatus(!question.getStatus());
+        }
+        questionRepository.save(question);
     }
 
     private void validateQuestionOrder(Long testId, Integer questionOrder, Long excludeQuestionId) {

@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface QuestionService {
     List<Question> getAllByTestId(Long id);
+    List<Question> getActiveByTestId(Long id);
     void save(Question question);
     void update(Long id, Question questionUpdated);
     void delete(Long id);
+    void changeStatus(Long id);
 }

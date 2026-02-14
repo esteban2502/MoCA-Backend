@@ -23,6 +23,11 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllByTestId(testId));
     }
 
+    @GetMapping("/test/{testId}/active")
+    public ResponseEntity<List<Question>> getActiveByTestId(@PathVariable Long testId){
+        return ResponseEntity.ok(questionService.getActiveByTestId(testId));
+    }
+
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody Question question){
         questionService.save(question);
@@ -38,6 +43,12 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         questionService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> changeStatus(@PathVariable Long id) {
+        questionService.changeStatus(id);
         return ResponseEntity.noContent().build();
     }
 

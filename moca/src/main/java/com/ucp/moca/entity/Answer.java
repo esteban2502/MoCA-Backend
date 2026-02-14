@@ -30,10 +30,12 @@ public class Answer {
     @JsonIgnoreProperties({"answers"})
     private Result result;
 
-    // Respuesta del paciente
+    // Respuesta del paciente (puede contener texto o imagen base64 para preguntas de dibujar)
+    @Column(columnDefinition = "TEXT")
     private String userAnswer;
 
     // Si es respuesta abierta (texto)
+    @Column(columnDefinition = "TEXT")
     private String textResponse;
 
     // Puntaje asignado por el psicólogo
