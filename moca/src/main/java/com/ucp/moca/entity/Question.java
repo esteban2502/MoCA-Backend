@@ -52,6 +52,10 @@ public class Question {
     @Column(name = "support_image", columnDefinition = "TEXT")
     private String supportImage;
 
+    // Imagen de fondo para "dibujar sobre una imagen" (Base64, lienzo bajo el dibujo)
+    @Column(name = "background_image", columnDefinition = "TEXT")
+    private String backgroundImage;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

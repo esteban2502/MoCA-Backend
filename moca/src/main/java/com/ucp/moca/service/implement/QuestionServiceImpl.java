@@ -55,6 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setIsDrawing(questionUpdated.getIsDrawing());
         existingQuestion.setStatus(questionUpdated.getStatus());
         existingQuestion.setSupportImage(questionUpdated.getSupportImage());
+        existingQuestion.setBackgroundImage(questionUpdated.getBackgroundImage());
 
         questionRepository.save(existingQuestion);
     }
