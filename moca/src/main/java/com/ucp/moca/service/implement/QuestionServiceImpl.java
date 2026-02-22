@@ -54,6 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setMaxScore(questionUpdated.getMaxScore());
         existingQuestion.setIsDrawing(questionUpdated.getIsDrawing());
         existingQuestion.setStatus(questionUpdated.getStatus());
+        existingQuestion.setSupportImage(questionUpdated.getSupportImage());
 
         questionRepository.save(existingQuestion);
     }

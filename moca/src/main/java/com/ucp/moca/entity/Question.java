@@ -48,6 +48,10 @@ public class Question {
     @Column(name = "status")
     private Boolean status;
 
+    // Imagen de apoyo opcional (Base64, mismo proceso que el resto de imágenes)
+    @Column(name = "support_image", columnDefinition = "TEXT")
+    private String supportImage;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
