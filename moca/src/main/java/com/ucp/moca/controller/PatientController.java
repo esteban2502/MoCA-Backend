@@ -67,6 +67,17 @@ public class PatientController {
 
     @PostMapping("/register")
     public ResponseEntity<Patient> registerPatient(@RequestBody Patient patient) {
+        // Validaciones básicas antes de registrar
+        if (patient.getBirthDate() == null) {
+            throw new IllegalArgumentException("La fecha de nacimiento es obligatoria.");
+        }
+        if (patient.getDocumentNumber() == null || patient.getDocumentNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("La cédula es obligatoria.");
+        }
+        // Evitar registrar pacientes con cédula duplicada
+        if (patientRepository.findByDocumentNumber(patient.getDocumentNumber()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe un paciente registrado con esta cédula.");
+        }
         // Los pacientes se registran sin psicólogos asignados
         // Los psicólogos se asignan cuando evalúan al paciente
         Patient saved = patientRepository.save(patient);
