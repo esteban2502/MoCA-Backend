@@ -49,14 +49,18 @@ public class ExcelServiceImpl implements ExcelService {
                 row.createCell(2).setCellValue("");
             }
             
-            // Concatenar nombres de psicólogos
+            // Concatenar nombres de psicólogos (si fullName es null, usar email o un texto genérico)
             StringBuilder psychologists = new StringBuilder();
             if (patient.getPsychologists() != null && !patient.getPsychologists().isEmpty()) {
                 patient.getPsychologists().forEach(psychologist -> {
                     if (psychologists.length() > 0) {
                         psychologists.append(", ");
                     }
-                    psychologists.append(psychologist.getFullName());
+                    String name = psychologist.getFullName();
+                    if (name == null || name.isBlank()) {
+                        name = psychologist.getEmail() != null ? psychologist.getEmail() : "Sin nombre";
+                    }
+                    psychologists.append(name);
                 });
             }
             row.createCell(3).setCellValue(psychologists.toString());

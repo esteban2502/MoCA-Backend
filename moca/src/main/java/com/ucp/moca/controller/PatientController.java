@@ -118,7 +118,11 @@ public class PatientController {
     public ResponseEntity<ByteArrayResource> exportPatientsToExcel() {
         try {
             UserEntity currentUser = getCurrentUser();
-            System.out.println("Exportando pacientes a Excel para psicólogo: " + currentUser.getFullName());
+            String fullName = currentUser.getFullName();
+            if (fullName == null || fullName.isBlank()) {
+                fullName = currentUser.getEmail() != null ? currentUser.getEmail() : "usuario";
+            }
+            System.out.println("Exportando pacientes a Excel para psicólogo: " + fullName);
 
             List<Patient> patients = patientRepository.findByPsychologistsId(currentUser.getId());
             System.out.println("Pacientes a exportar: " + patients.size());
@@ -127,7 +131,8 @@ public class PatientController {
             ByteArrayResource resource = new ByteArrayResource(excelStream.toByteArray());
 
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String filename = "pacientes_" + currentUser.getFullName().replace(" ", "_") + "_" + timestamp + ".xlsx";
+            String safeName = fullName.replace(" ", "_");
+            String filename = "pacientes_" + safeName + "_" + timestamp + ".xlsx";
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
