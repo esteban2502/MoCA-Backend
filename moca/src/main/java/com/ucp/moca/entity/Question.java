@@ -56,6 +56,15 @@ public class Question {
     @Column(name = "background_image", columnDefinition = "TEXT")
     private String backgroundImage;
 
+    // Configuración de tabla dinámica (JSON con columnas y filas)
+    // Ejemplo:
+    // {
+    //   "columns": ["Columna 1", "Columna 2"],
+    //   "rows": ["Fila 1", "Fila 2"]
+    // }
+    @Column(name = "dynamic_table_config", columnDefinition = "TEXT")
+    private String dynamicTableConfig;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

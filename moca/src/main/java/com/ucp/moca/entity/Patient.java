@@ -32,6 +32,24 @@ public class Patient {
 
     private LocalDate birthDate;
 
+    // Sexo del paciente: Hombre, Mujer, Otro
+    @Column(name = "sex", length = 20)
+    private String sex;
+
+    // Descripción cuando el sexo es "Otro" (máx 35 caracteres)
+    @Column(name = "sex_other_description", length = 35)
+    private String sexOtherDescription;
+
+    // Nivel de educación del paciente
+    // Valores esperados:
+    // - Educación Inicial
+    // - Educación Preescolar
+    // - Educación Basica (Primaria y Secundaria)
+    // - Educación Media (Bachillerato)
+    // - Educación superior
+    @Column(name = "education_level", length = 60)
+    private String educationLevel;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "patient_psychologists",

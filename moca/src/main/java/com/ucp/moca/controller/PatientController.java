@@ -78,6 +78,43 @@ public class PatientController {
         if (patientRepository.findByDocumentNumber(patient.getDocumentNumber()).isPresent()) {
             throw new IllegalArgumentException("Ya existe un paciente registrado con esta cédula.");
         }
+
+        // Validar sexo
+        if (patient.getSex() == null || patient.getSex().trim().isEmpty()) {
+            throw new IllegalArgumentException("El sexo es obligatorio.");
+        }
+        String sex = patient.getSex().trim();
+        if (!sex.equals("Hombre") && !sex.equals("Mujer") && !sex.equals("Otro")) {
+            throw new IllegalArgumentException("El sexo debe ser Hombre, Mujer u Otro.");
+        }
+        if (sex.equals("Otro")) {
+            String other = patient.getSexOtherDescription();
+            if (other == null || other.trim().isEmpty()) {
+                throw new IllegalArgumentException("Debe especificar el sexo en la opción 'Otro'.");
+            }
+            if (other.trim().length() > 35) {
+                throw new IllegalArgumentException("La descripción de 'Otro' no puede superar los 35 caracteres.");
+            }
+            patient.setSexOtherDescription(other.trim());
+        } else {
+            // Limpiar descripción si no aplica
+            patient.setSexOtherDescription(null);
+        }
+
+        // Validar nivel de educación
+        if (patient.getEducationLevel() == null || patient.getEducationLevel().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nivel de educación es obligatorio.");
+        }
+        String edu = patient.getEducationLevel().trim();
+        if (!edu.equals("Educación Inicial")
+                && !edu.equals("Educación Preescolar")
+                && !edu.equals("Educación Basica (Primaria y Secundaria)")
+                && !edu.equals("Educación Media (Bachillerato)")
+                && !edu.equals("Educación superior")) {
+            throw new IllegalArgumentException("El nivel de educación no es válido.");
+        }
+        patient.setEducationLevel(edu);
+
         // Los pacientes se registran sin psicólogos asignados
         // Los psicólogos se asignan cuando evalúan al paciente
         Patient saved = patientRepository.save(patient);
@@ -174,6 +211,9 @@ public class PatientController {
             // Actualizar solo los campos permitidos
             patientToUpdate.setFullName(patient.getFullName());
             patientToUpdate.setBirthDate(patient.getBirthDate());
+            patientToUpdate.setSex(patient.getSex());
+            patientToUpdate.setSexOtherDescription(patient.getSexOtherDescription());
+            patientToUpdate.setEducationLevel(patient.getEducationLevel());
             // No permitir cambiar la cédula por seguridad
 
             Patient updatedPatient = patientRepository.save(patientToUpdate);

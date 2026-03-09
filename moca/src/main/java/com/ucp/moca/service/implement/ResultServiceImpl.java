@@ -141,6 +141,7 @@ public class ResultServiceImpl implements ResultService {
                 // Crear una nueva Answer con los datos correctos
                 Answer newAnswer = new Answer();
                 newAnswer.setUserAnswer(answerRequest.getUserAnswer());
+                newAnswer.setDynamicTableResponse(answerRequest.getDynamicTableResponse());
                 newAnswer.setScore(answerRequest.getScore());
                 newAnswer.setNotes(answerRequest.getNotes());
                 newAnswer.setResult(result);
