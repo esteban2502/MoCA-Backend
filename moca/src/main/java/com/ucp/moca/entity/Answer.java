@@ -45,4 +45,13 @@ public class Answer {
     @Column(nullable = false, length = 500)
     private String notes;
 
+    // Respuesta de tabla dinámica (JSON con celdas seleccionadas)
+    // Ejemplo:
+    // {
+    //   "0-1": true,
+    //   "1-0": true
+    // }
+    @Column(name = "dynamic_table_response", columnDefinition = "TEXT")
+    private String dynamicTableResponse;
+
 }

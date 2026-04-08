@@ -31,6 +31,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void save(Question question) {
+        // Validar que se haya seleccionado una categoría
+        if (question.getCategory() == null || question.getCategory().getId() == null) {
+            throw new IllegalArgumentException("Debe elegir una categoría para poder crear la pregunta.");
+        }
         // Validar que no exista otra pregunta con el mismo orden en el mismo examen
         validateQuestionOrder(question.getTest().getId(), question.getQuestionOrder(), null);
         // Si no se especifica status, establecerlo como true por defecto
@@ -54,6 +58,10 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setMaxScore(questionUpdated.getMaxScore());
         existingQuestion.setIsDrawing(questionUpdated.getIsDrawing());
         existingQuestion.setStatus(questionUpdated.getStatus());
+        existingQuestion.setSupportImage(questionUpdated.getSupportImage());
+        existingQuestion.setBackgroundImage(questionUpdated.getBackgroundImage());
+        // Actualizar configuración de tabla dinámica (si aplica)
+        existingQuestion.setDynamicTableConfig(questionUpdated.getDynamicTableConfig());
 
         questionRepository.save(existingQuestion);
     }

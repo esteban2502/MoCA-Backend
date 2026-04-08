@@ -12,6 +12,7 @@ import lombok.Setter;
 public class AnswerRequest {
     private Long questionId;
     private String userAnswer;
+    private String dynamicTableResponse;
     private Integer score;
     private String notes;
 }

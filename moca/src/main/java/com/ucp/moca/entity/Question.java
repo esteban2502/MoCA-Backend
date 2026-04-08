@@ -48,6 +48,23 @@ public class Question {
     @Column(name = "status")
     private Boolean status;
 
+    // Imagen de apoyo opcional (Base64, mismo proceso que el resto de imágenes)
+    @Column(name = "support_image", columnDefinition = "TEXT")
+    private String supportImage;
+
+    // Imagen de fondo para "dibujar sobre una imagen" (Base64, lienzo bajo el dibujo)
+    @Column(name = "background_image", columnDefinition = "TEXT")
+    private String backgroundImage;
+
+    // Configuración de tabla dinámica (JSON con columnas y filas)
+    // Ejemplo:
+    // {
+    //   "columns": ["Columna 1", "Columna 2"],
+    //   "rows": ["Fila 1", "Fila 2"]
+    // }
+    @Column(name = "dynamic_table_config", columnDefinition = "TEXT")
+    private String dynamicTableConfig;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
