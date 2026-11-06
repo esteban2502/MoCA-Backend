@@ -65,6 +65,10 @@ public class Question {
     @Column(name = "dynamic_table_config", columnDefinition = "TEXT")
     private String dynamicTableConfig;
 
+    // Si true, durante la evaluación se muestra un temporizador para esta pregunta
+    @Column(name = "timer_enabled")
+    private Boolean timerEnabled = false;
+
     // Categoría cognitiva (Memoria, Atención, Lenguaje, etc.)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

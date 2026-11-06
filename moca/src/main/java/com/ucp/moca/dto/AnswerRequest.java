@@ -15,4 +15,6 @@ public class AnswerRequest {
     private String dynamicTableResponse;
     private Integer score;
     private String notes;
+    // Tiempo transcurrido (milisegundos) para preguntas con temporizador habilitado
+    private Long timerDurationMs;
 }

@@ -54,4 +54,9 @@ public class Answer {
     @Column(name = "dynamic_table_response", columnDefinition = "TEXT")
     private String dynamicTableResponse;
 
+    // Tiempo transcurrido en la evaluación de esta pregunta (si el temporizador está habilitado).
+    // Guardamos milisegundos para mayor precisión.
+    @Column(name = "timer_duration_ms")
+    private Long timerDurationMs;
+
 }

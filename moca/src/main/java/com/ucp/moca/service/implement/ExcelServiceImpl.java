@@ -135,7 +135,11 @@ public class ExcelServiceImpl implements ExcelService {
             }
             
             if (result.getUser() != null) {
-                row.createCell(5).setCellValue(result.getUser().getFullName());
+                String psychologistName = result.getUser().getFullName();
+                if (psychologistName == null || psychologistName.isBlank()) {
+                    psychologistName = result.getUser().getEmail() != null ? result.getUser().getEmail() : "Sin identificar";
+                }
+                row.createCell(5).setCellValue(psychologistName);
             } else {
                 row.createCell(5).setCellValue("Sin identificar");
             }

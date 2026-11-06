@@ -142,6 +142,7 @@ public class ResultServiceImpl implements ResultService {
                 Answer newAnswer = new Answer();
                 newAnswer.setUserAnswer(answerRequest.getUserAnswer());
                 newAnswer.setDynamicTableResponse(answerRequest.getDynamicTableResponse());
+                newAnswer.setTimerDurationMs(answerRequest.getTimerDurationMs());
                 newAnswer.setScore(answerRequest.getScore());
                 newAnswer.setNotes(answerRequest.getNotes());
                 newAnswer.setResult(result);

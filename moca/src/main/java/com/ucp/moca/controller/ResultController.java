@@ -143,7 +143,8 @@ public class ResultController {
     public ResponseEntity<ByteArrayResource> exportResultsToExcel() {
         try {
             UserEntity currentUser = getCurrentUser();
-            System.out.println("📊 Exportando evaluaciones a Excel para psicólogo: " + currentUser.getFullName());
+            String displayName = resolveUserDisplayName(currentUser);
+            System.out.println("📊 Exportando evaluaciones a Excel para psicólogo: " + displayName);
 
             List<Result> results = resultService.getByUserId(currentUser.getId());
             System.out.println("📋 Evaluaciones a exportar: " + results.size());
@@ -152,7 +153,7 @@ public class ResultController {
             ByteArrayResource resource = new ByteArrayResource(excelStream.toByteArray());
 
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String filename = "evaluaciones_" + currentUser.getFullName().replace(" ", "_") + "_" + timestamp + ".xlsx";
+            String filename = "evaluaciones_" + displayName.replace(" ", "_") + "_" + timestamp + ".xlsx";
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
@@ -164,8 +165,13 @@ public class ResultController {
             System.err.println("❌ Error generando Excel de evaluaciones: " + e.getMessage());
             return ResponseEntity.status(500).build();
         } catch (RuntimeException e) {
-            System.err.println("❌ Error obteniendo usuario autenticado: " + e.getMessage());
-            return ResponseEntity.status(401).build();
+            if ("Usuario no autenticado".equals(e.getMessage())) {
+                System.err.println("❌ Error obteniendo usuario autenticado: " + e.getMessage());
+                return ResponseEntity.status(401).build();
+            }
+            System.err.println("❌ Error exportando evaluaciones a Excel: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -211,5 +217,15 @@ public class ResultController {
             return (UserEntity) authentication.getPrincipal();
         }
         throw new RuntimeException("Usuario no autenticado");
+    }
+
+    private String resolveUserDisplayName(UserEntity user) {
+        if (user.getFullName() != null && !user.getFullName().isBlank()) {
+            return user.getFullName();
+        }
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            return user.getEmail();
+        }
+        return "usuario";
     }
 }

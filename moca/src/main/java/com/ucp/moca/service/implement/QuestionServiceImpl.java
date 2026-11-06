@@ -60,6 +60,7 @@ public class QuestionServiceImpl implements QuestionService {
         existingQuestion.setStatus(questionUpdated.getStatus());
         existingQuestion.setSupportImage(questionUpdated.getSupportImage());
         existingQuestion.setBackgroundImage(questionUpdated.getBackgroundImage());
+        existingQuestion.setTimerEnabled(questionUpdated.getTimerEnabled());
         // Actualizar configuración de tabla dinámica (si aplica)
         existingQuestion.setDynamicTableConfig(questionUpdated.getDynamicTableConfig());
 

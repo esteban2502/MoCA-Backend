@@ -20,5 +20,5 @@ public class Category {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 100)
-    private String name; // Ej: "Memoria", "Atención", "Lenguaje"
+    private String name; // Example: "Memoria", "Atención", "Lenguaje"
 }
